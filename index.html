@@ -85,41 +85,18 @@ body {
 }
 .hero-cover-img.loaded { display: block; }
 
-/* ─── COVER UPLOAD BUTTON ─── */
-.cover-upload-btn {
-  position: absolute; top: 80px; right: 1.5rem; z-index: 20;
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.45rem 1rem;
-  background: rgba(200,169,110,0.12);
-  border: 1px solid rgba(200,169,110,0.35);
-  border-radius: 100px;
-  color: var(--gold-light); font-size: 0.75rem; font-weight: 500;
-  cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.04em;
-  font-family: 'DM Sans', sans-serif;
-}
-.cover-upload-btn:hover { background: rgba(200,169,110,0.28); border-color: var(--gold); color: var(--gold); }
 
 /* ─── AVATAR WRAPPER (profile photo) ─── */
 .avatar-wrapper {
   position: relative; width: 100px; height: 100px;
-  border-radius: 50%; margin: 0 auto 1.5rem; cursor: pointer;
+  border-radius: 50%; margin: 0 auto 1.5rem;
 }
-.avatar-hint {
-  position: absolute; inset: 0; border-radius: 50%;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background: rgba(10,22,40,0.62); opacity: 0; transition: opacity 0.3s ease; z-index: 5;
-  gap: 0.2rem; color: var(--gold-light); font-size: 0.65rem; text-align: center;
-}
-.avatar-hint i { font-size: 1.1rem; color: var(--gold); margin-bottom: 2px; }
-.avatar-wrapper:hover .avatar-hint { opacity: 1; }
 .avatar-photo {
   position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; object-position: center;
   border-radius: 50%; display: none; z-index: 2;
 }
 .avatar-photo.loaded { display: block; }
-.avatar-initials { transition: opacity 0.3s ease; }
-.avatar-initials.hidden { opacity: 0; }
 
 /* ─── LOADER ─── */
 #loader {
@@ -979,10 +956,6 @@ footer {
 </head>
 <body>
 
-<!-- hidden file inputs -->
-<input type="file" id="coverInput" accept="image/*" style="display:none">
-<input type="file" id="avatarInput" accept="image/*" style="display:none">
-
 <!-- LOADER -->
 <div id="loader">
   <div class="loader-logo">AKS</div>
@@ -1021,9 +994,13 @@ footer {
 
 <!-- HERO -->
 <section id="hero">
-  <!-- ① Cover photo layer (low opacity, behind everything) -->
+  <!-- Cover photo layer (permanent, behind everything) -->
   <div class="hero-cover">
-    <img id="coverImg" class="hero-cover-img" alt="Cover Photo">
+    <img 
+      src="1722845187549.jpeg"
+      class="hero-cover-img loaded"
+      alt="Cover Photo"
+    >
   </div>
 
   <div class="hero-canvas">
@@ -1034,10 +1011,6 @@ footer {
     <div class="floating-icons" id="floatIcons"></div>
   </div>
 
-  <!-- ② Cover photo upload button -->
-  <button class="cover-upload-btn" onclick="document.getElementById('coverInput').click()">
-    <i class="fas fa-image"></i> Set Cover Photo
-  </button>
   <div class="hero-content">
     <div class="hero-text">
       <div class="hero-badge"><span>Medical Representative</span></div>
@@ -1071,15 +1044,13 @@ footer {
     <div class="hero-visual">
       <div class="hero-card">
         <div class="hero-card-inner">
-          <!-- Clickable profile photo avatar -->
-          <div class="avatar-wrapper" onclick="document.getElementById('avatarInput').click()" title="Click to upload profile photo">
+          <div class="avatar-wrapper">
             <div class="hero-avatar">
-              <img id="avatarPhoto" class="avatar-photo" alt="Profile Photo">
-              <span class="avatar-initials" id="avatarInitials">A</span>
-            </div>
-            <div class="avatar-hint">
-              <i class="fas fa-camera"></i>
-              <span>Upload Photo</span>
+              <img 
+                src="1721553219393.jpeg"
+                class="avatar-photo loaded"
+                alt="Profile Photo"
+              >
             </div>
           </div>
           <div class="hero-card-name">Ankush Kumar Sharma</div>
@@ -1540,56 +1511,6 @@ for (let i = 0; i < 12; i++) {
   el.style.animationDuration = `${4 + Math.random() * 4}s`;
   container.appendChild(el);
 }
-
-// ─── COVER PHOTO UPLOAD ───
-const coverInput = document.getElementById('coverInput');
-const coverImg   = document.getElementById('coverImg');
-
-function loadCoverPhoto(dataUrl) {
-  coverImg.src = dataUrl;
-  coverImg.classList.add('loaded');
-}
-coverInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    loadCoverPhoto(ev.target.result);
-    try { localStorage.setItem('aks_cover', ev.target.result); } catch(err) {}
-  };
-  reader.readAsDataURL(file);
-});
-// Restore saved cover photo on reload
-try {
-  const saved = localStorage.getItem('aks_cover');
-  if (saved) loadCoverPhoto(saved);
-} catch(err) {}
-
-// ─── PROFILE PHOTO UPLOAD ───
-const avatarInput    = document.getElementById('avatarInput');
-const avatarPhoto    = document.getElementById('avatarPhoto');
-const avatarInitials = document.getElementById('avatarInitials');
-
-function loadProfilePhoto(dataUrl) {
-  avatarPhoto.src = dataUrl;
-  avatarPhoto.classList.add('loaded');
-  avatarInitials.classList.add('hidden');
-}
-avatarInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    loadProfilePhoto(ev.target.result);
-    try { localStorage.setItem('aks_profile', ev.target.result); } catch(err) {}
-  };
-  reader.readAsDataURL(file);
-});
-// Restore saved profile photo on reload
-try {
-  const savedP = localStorage.getItem('aks_profile');
-  if (savedP) loadProfilePhoto(savedP);
-} catch(err) {}
 
 // ─── COUNTER ANIMATION ───
 function animateCounters() {
